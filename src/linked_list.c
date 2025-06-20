@@ -32,7 +32,7 @@ static struct node * new_node(int data)
 }
 
 
-struct node * append(struct node * head, int data)
+struct node * ll_append(struct node * head, int data)
 {
         struct node * new = new_node(data);
         if(head)
@@ -43,18 +43,18 @@ struct node * append(struct node * head, int data)
         return head ? head : new;
 }
 
-struct node * at_index(struct node * head, int index)
+struct node * ll_at_index(struct node * head, int index)
 {
         if(!head)
                 return NULL;
         if(!index)
                 return head;
-        return at_index(head->next, index-1);
+        return ll_at_index(head->next, index-1);
 }
 
-struct node * insert(struct node * head, int index, int data)
+struct node * ll_insert(struct node * head, int index, int data)
 {
-        struct node * before = at_index(head, index);
+        struct node * before = ll_at_index(head, index);
         struct node * new = new_node(data);
         if(before)
         {
@@ -64,11 +64,11 @@ struct node * insert(struct node * head, int index, int data)
         return head ? head : new;
 }
 
-size_t length(struct node * head)
+size_t ll_length(struct node * head)
 {
         if(!head)
                 return 0;
-        return length(head->next) + 1;
+        return ll_length(head->next) + 1;
 }
 
 static struct node * help_reverse(struct node * current)
@@ -81,7 +81,7 @@ static struct node * help_reverse(struct node * current)
         return current;
 }
 
-struct node * reverse(struct node * head)
+struct node * ll_reverse(struct node * head)
 {
         struct node * new_head = endof(head);
         help_reverse(head);
@@ -89,40 +89,59 @@ struct node * reverse(struct node * head)
         return new_head;
 }
 
-void destroy(struct node * head)
+void ll_destroy(struct node * head)
 {
         if(!head)
                 return;
-        destroy(head->next);
+        ll_destroy(head->next);
         free(head);
 }
 
-struct node * copy(struct node * head)
+struct node * ll_copy(struct node * head)
 {
         if(!head)
                 return head;
         struct node * new = new_node(head->data);
-        new->next = copy(head->next);
+        new->next = ll_copy(head->next);
         return new;
 }
 
-struct node * create_random_list(size_t len)
+static struct node * create_random_list(size_t len)
 {
         struct node * head = NULL;
         while(len--)
         {
-                head = insert(head, 0, rand());
+                head = ll_insert(head, 0, rand());
         }
         return head;
 }
 
-int equal(struct node * node1, struct node * node2)
+int ll_equal(struct node * node1, struct node * node2)
 {
         if(!node1 && !node2)
                 return 0;
         if(!node1 || !node2)
                 return -1;
-        return equal(node1->next, node2->next) + (node1->data - node2->data);
+        return ll_equal(node1->next, node2->next) + (node1->data - node2->data);
+}
+
+struct node * ll_remove(struct node * head, int index)
+{
+        if(!head)
+                return NULL;
+        if(index == 0)
+                return head->next;
+
+        if(index == 1)
+        {
+                struct node * element_to_remove = head->next;
+                head->next = head->next->next; //skip to next element
+                free(element_to_remove);
+        }
+
+        ll_remove(head->next, index - 1);
+
+        return head;
 }
 
 static int test_function()
@@ -132,9 +151,9 @@ static int test_function()
         {
                 int test_length = rand() % 1000;
                 struct node * list = create_random_list(test_length);
-                printf("\n length: %zu:%d\n", length(list), test_length);
-                assert(length(list) == test_length);
-                destroy(list);
+                printf("\n length: %zu:%d\n", ll_length(list), test_length);
+                assert(ll_length(list) == test_length);
+                ll_destroy(list);
         }
 
         // reverse test
@@ -143,11 +162,11 @@ static int test_function()
                 printf("before reverse: ");
                 print_list(list);
                 printf("\nafter reverse: ");
-                list = reverse(list);
+                list = ll_reverse(list);
                 print_list(list);
                 printf("\n");
 
-                destroy(list);
+                ll_destroy(list);
         }
         // copy test
         {
@@ -155,17 +174,17 @@ static int test_function()
                 printf("Copying list: ");
                 print_list(list);
                 printf("\n");
-                struct node *new_list = copy(list);
+                struct node *new_list = ll_copy(list);
                 printf("modifying old list\n");
-                at_index(list, 2)->data = 101;
+                ll_at_index(list, 2)->data = 101;
                 printf("copied list: ");
                 print_list(new_list);
                 printf("\n");
                 
-                assert(equal(list, new_list) != 0);
+                assert(ll_equal(list, new_list) != 0);
 
-                destroy(list);
-                destroy(new_list);
+                ll_destroy(list);
+                ll_destroy(new_list);
         }
         return TEST_PASS;
 }
