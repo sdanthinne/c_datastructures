@@ -1,3 +1,4 @@
+#include "linked_list.h"
 #include "test.h"
 
 #include <stdio.h>
@@ -5,10 +6,6 @@
 #include <assert.h>
 #include <time.h>
 
-struct node {
-        struct node * next;
-        int data;
-};
 
 static void print_list(struct node * head)
 {
