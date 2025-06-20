@@ -109,9 +109,10 @@ struct node * ll_copy(struct node * head)
 static struct node * create_random_list(size_t len)
 {
         struct node * head = NULL;
-        while(len--)
+        while(len)
         {
                 head = ll_insert(head, 0, rand());
+                --len;
         }
         return head;
 }
@@ -144,14 +145,14 @@ struct node * ll_remove(struct node * head, int index)
         return head;
 }
 
-static int test_function()
+static int test_function(void)
 {
-        srand(time(NULL));
+        srand((unsigned int)time(NULL));
         // length test
         {
-                int test_length = rand() % 1000;
+                size_t test_length = (size_t) rand() % 1000;
                 struct node * list = create_random_list(test_length);
-                printf("\n length: %zu:%d\n", ll_length(list), test_length);
+                printf("\n length: %zu:%zu\n", ll_length(list), test_length);
                 assert(ll_length(list) == test_length);
                 ll_destroy(list);
         }

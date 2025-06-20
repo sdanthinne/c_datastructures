@@ -26,7 +26,7 @@ int run_test(test_t * test)
         return rc;
 }
 
-int run_tests()
+int run_tests(void)
 {
         int i=0;
         setvbuf(stdout, NULL, _IONBF, 0);

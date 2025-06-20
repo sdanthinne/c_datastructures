@@ -4,7 +4,7 @@
 
 typedef struct test_s {
         char * name;
-        int (*test_base)();
+        int (*test_base)(void);
         bool active;
 } test_t;
 
@@ -24,4 +24,4 @@ enum test_rc {
 extern test_t * registered_tests_start;
 extern test_t * registered_tests_end;
 
-int run_tests();
+int run_tests(void);

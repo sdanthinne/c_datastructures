@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-static int test_function()
+static int test_function(void)
 {
         return TEST_PASS;
 }
